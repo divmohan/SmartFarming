@@ -124,7 +124,7 @@ thread1 = myThread(1, "DailyThread")
 thread1.start()
 
 
-bot = telepot.Bot('322060273:AAHjszgt4w95TKgGMtpAN-I1Nbv7VA7-5Lg')
+bot = telepot.Bot('**************************************')
 bot.message_loop(handle)
 
 while 1:
