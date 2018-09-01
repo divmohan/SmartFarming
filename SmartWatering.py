@@ -26,6 +26,13 @@ def valveOn(Pin):
         GPIO.output(18, GPIO.LOW)
         print("GPIO LOW (off), valve should be on")
         
+def motorOn():
+        print("Switch on the motor")
+        os.system("python tplink_smartplug.py -t 192.168.31.60 -c 'on'")
+
+def motorOff():
+        print("Switch off the motor")
+        os.system("python tplink_smartplug.py -t 192.168.31.60 -c 'off'")
 
 def takeVideo(videoFile):
         print("Save the video",videoFile);
@@ -34,7 +41,7 @@ def takeVideo(videoFile):
 	subprocess.call(cmd, shell=True)
 
 def sendVideo(videoFile):
-        chatId='311849016'
+        chatId='********'
         document = open(videoFile, 'rb')
         bot.sendDocument(chatId, document)
         document.close()
@@ -45,7 +52,8 @@ def sendVideo(videoFile):
 def waterPlants(  ):
     with lock:  
         print "Acquired lock:start watering at:" + datetime.now().strftime('%H:%M:%S') 
-        valveOn(18);
+        #valveOn(18);
+        motorOn();
         time.sleep(5);
 
         #start camera and take video
@@ -53,8 +61,8 @@ def waterPlants(  ):
         videoFile     = fileTimestamp + '.h264'
         takeVideo(videoFile)
 	
-        #time.sleep(10)
-        valveOff(18);
+        time.sleep(10)
+        motorOff(); #Switch off after 25 seconds
 
         #send video to phone
         sendVideo(videoFile)
@@ -85,7 +93,7 @@ def waterDaily(threadName):
       print("Water time:",wateringTime)
       if (currentTime == wateringTime):         
         waterPlants();
-        time.sleep(86280);  #23 hrs in seconds
+        time.sleep(86280);  #23 hrs 58 mins in seconds
                  			
       else:
    	  print("Its not yet time to water")
@@ -103,7 +111,9 @@ def handle(msg):
 
         if words[0] == 'Waterplants':
                 print "Call function to water plants" 
+                bot.sendMessage(chat_id, "Ack")
                 waterPlants();
+                
                 # os.system("/home/pi/pi/dev/youtube-music/play-from-youtube.sh %s &" % str)
         else:
                 bot.sendMessage(chat_id, "Invalid Message")
@@ -124,7 +134,7 @@ thread1 = myThread(1, "DailyThread")
 thread1.start()
 
 
-bot = telepot.Bot('322060273:AAHjszgt4w95TKgGMtpAN-I1Nbv7VA7-5Lg')
+bot = telepot.Bot('*****')
 bot.message_loop(handle)
 
 while 1:
